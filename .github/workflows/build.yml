@@ -16,6 +16,17 @@ jobs:
             mv shamel_phase12_release/* .
           fi
 
+      - name: Auto-Fix AccountType Error
+        run: |
+          TARGET_FILE="lib/features/auth/data/secure_session_storage.dart"
+          if [ -f "$TARGET_FILE" ]; then
+            echo "File found. Applying auto-fix..."
+            sed -i "s/user\.userType?\.value/user\.userType?\.name/g" "$TARGET_FILE"
+          else
+            echo "File not found at standard path, searching..."
+            find . -name "secure_session_storage.dart" -exec sed -i "s/user\.userType?\.value/user\.userType?\.name/g" {} +
+          fi
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
