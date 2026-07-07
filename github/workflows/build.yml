@@ -38,3 +38,4 @@ jobs:
         with:
           name: shamel-release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
+
