@@ -38,6 +38,9 @@ jobs:
         with:
           channel: 'stable'
 
+      - name: Resolve Firebase Dependencies
+        run: flutter pub upgrade firebase_core firebase_performance
+
       - name: Get Dependencies
         run: flutter pub get
 
