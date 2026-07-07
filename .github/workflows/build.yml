@@ -27,6 +27,9 @@ jobs:
         with:
           channel: 'stable'
 
+      - name: Resolve Package Conflicts
+        run: flutter pub upgrade --major-versions
+
       - name: Get Dependencies
         run: flutter pub get
 
