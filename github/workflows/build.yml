@@ -1,9 +1,6 @@
 name: Build Shamel APK
 on:
-  push:
-    branches:
-      - main
-      - master
+  workflow_dispatch:
 
 jobs:
   build:
@@ -15,8 +12,8 @@ jobs:
       - name: Unzip Project Files
         run: |
           unzip -o shamel_final_master_production_review.zip
-          if [ -d "shamel_phase12_release" ]; then
-            mv shamel_phase12_release/* .
+          if [ -d "shamel-app" ]; then
+            mv shamel-app/* .
           fi
 
       - name: Setup Java
@@ -41,4 +38,3 @@ jobs:
         with:
           name: shamel-release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
-
