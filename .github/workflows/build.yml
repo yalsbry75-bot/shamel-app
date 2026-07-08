@@ -29,15 +29,15 @@ jobs:
             sed -i 's/cloud_firestore:.*/cloud_firestore: any/g' pubspec.yaml
           fi
 
-      - name: Bypass Android Gradle Plugin Version Check
+      - name: Force Compatible Android Dependencies
         run: |
           if [ -f "android/app/build.gradle" ]; then
-            echo "Injecting suppressAarMetadataCheck to bypass Gradle 8.9.1 requirement..."
-            # إضافة أمر تخطي الفحص الصارم للمكتبات ليتوافق مع السيرفر
-            sed -i '/android {/a \    dependencies {\n        constraints {\n            implementation("androidx.core:core-ktx:1.13.1") { because("Bypass 1.18.0 requiring Gradle 8.9.1") }\n        }\n    }' android/app/build.gradle
+            echo "Enforcing stable Android dependencies to bypass Gradle 8.9.1 requirement..."
+            # إجبار الأندرويد على استخدام إصدارات مستقرة ومتوافقة مع السيرفر بدلاً من سحب نسخ حديثة متعارضة
+            sed -i '/dependencies {/a \    implementation(platform("androidx.compose:compose-bom:2024.04.01"))\n    implementation("androidx.core:core-ktx:1.13.1")\n    implementation("androidx.activity:activity:1.9.0")\n    implementation("androidx.fragment:fragment:1.7.0")' android/app/build.gradle
             
-            # طريقة ثانية مضمونة لإيقاف الفحص تماماً في الأندرويد
-            echo "subprojects { tasks.withType(com.android.build.gradle.internal.tasks.CheckAarMetadataWorkAction) { enabled = false } }" >> android/build.gradle
+            # إيقاف فحص الـ AAR Metadata تماماً بطريقة برمجية داخل ملف التطبيق
+            echo "android { configurations.all { resolutionStrategy { force 'androidx.core:core-ktx:1.13.1'; force 'androidx.activity:activity:1.9.0' } } }" >> android/app/build.gradle
           fi
 
       - name: Setup Java
