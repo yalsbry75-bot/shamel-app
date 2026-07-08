@@ -29,6 +29,19 @@ jobs:
             sed -i 's/cloud_firestore:.*/cloud_firestore: any/g' pubspec.yaml
           fi
 
+      - name: Fix Android Gradle & Kotlin Dependencies
+        run: |
+          if [ -f "android/build.gradle" ]; then
+            echo "Upgrading Android Gradle Plugin and Kotlin versions..."
+            # تحديث إصدار الكوتلن وإصدار قرادل المتعارض مع المكتبات الحديثة
+            sed -i 's/ext.kotlin_version =.*/ext.kotlin_version = "1.9.24"/g' android/build.gradle
+            sed -i 's/com.android.tools.build:gradle:.*/com.android.tools.build:gradle:8.2.1/g' android/build.gradle
+          fi
+          if [ -f "android/gradle/wrapper/gradle-wrapper.properties" ]; then
+            # تحديث توزيعة قرادل لتتوافق مع التحديث الجديد
+            sed -i 's/gradle-.*-all.zip/gradle-8.5-all.zip/g' android/gradle/wrapper/gradle-wrapper.properties
+          fi
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -42,9 +55,6 @@ jobs:
 
       - name: Get Dependencies
         run: flutter pub get
-
-      - name: Analyze Project Code (Show Detailed Errors)
-        run: flutter analyze || true
 
       - name: Build APK
         run: flutter build apk --release
