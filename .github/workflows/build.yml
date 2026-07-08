@@ -19,7 +19,6 @@ jobs:
       - name: Auto-Fix AccountType Errors (All Files)
         run: |
           echo "Applying auto-fix for AccountType value/name error in all files..."
-          # إصلاح الخطأ في الملف الأول والثاني وفي أي ملف كود آخر احتياطاً
           find . -name "*.dart" -exec sed -i "s/user\.userType?\.value/user\.userType?\.name/g" {} +
 
       - name: Ultimate Smart Fix For All Firebase Conflicts
@@ -47,8 +46,8 @@ jobs:
           channel: 'stable'
 
       - name: Auto-Resolve Firebase Dependencies Safe Upgrade
-        # ترقية ذكية ومقيدة لكي لا تكسر إصدارات الأندرويد جيردل القديمة
-        run: flutter pub upgrade --allow-reconnect
+        # تعديل الأمر وحذف الخيار غير المدعوم ليعمل بسلام
+        run: flutter pub upgrade
 
       - name: Get Dependencies
         run: flutter pub get
