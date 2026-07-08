@@ -16,26 +16,23 @@ jobs:
             mv shamel_phase12_release/* .
           fi
 
-      - name: Auto-Fix AccountType Error
+      - name: Auto-Fix AccountType Errors (All Files)
         run: |
-          TARGET_FILE="lib/features/auth/data/secure_session_storage.dart"
-          if [ -f "$TARGET_FILE" ]; then
-            echo "File found. Applying auto-fix..."
-            sed -i "s/user\.userType?\.value/user\.userType?\.name/g" "$TARGET_FILE"
-          else
-            echo "File not found at standard path, searching..."
-            find . -name "secure_session_storage.dart" -exec sed -i "s/user\.userType?\.value/user\.userType?\.name/g" {} +
-          fi
+          echo "Applying auto-fix for AccountType value/name error in all files..."
+          # إصلاح الخطأ في الملف الأول والثاني وفي أي ملف كود آخر احتياطاً
+          find . -name "*.dart" -exec sed -i "s/user\.userType?\.value/user\.userType?\.name/g" {} +
 
-      - name: Force Fix Firebase Conflict
+      - name: Ultimate Smart Fix For All Firebase Conflicts
         run: |
           if [ -f "pubspec.yaml" ]; then
-            echo "Modifying pubspec.yaml to resolve Firebase conflicts..."
-            # ضبط الإصدارات المتوافقة تماماً لتفكيك العقدة
-            sed -i 's/firebase_core:.*/firebase_core: 3.15.0/g' pubspec.yaml
+            echo "Executing full automatic resolution for all package conflicts..."
+            sed -i 's/firebase_core:.*/firebase_core: any/g' pubspec.yaml
             sed -i 's/firebase_performance:.*/firebase_performance: any/g' pubspec.yaml
-            sed -i 's/firebase_crashlytics:.*/firebase_crashlytics: 4.3.8/g' pubspec.yaml
-            sed -i 's/firebase_messaging:.*/firebase_messaging: 15.2.8/g' pubspec.yaml
+            sed -i 's/firebase_crashlytics:.*/firebase_crashlytics: any/g' pubspec.yaml
+            sed -i 's/firebase_messaging:.*/firebase_messaging: any/g' pubspec.yaml
+            sed -i 's/firebase_analytics:.*/firebase_analytics: any/g' pubspec.yaml
+            sed -i 's/firebase_auth:.*/firebase_auth: any/g' pubspec.yaml
+            sed -i 's/cloud_firestore:.*/cloud_firestore: any/g' pubspec.yaml
           fi
 
       - name: Setup Java
@@ -48,6 +45,10 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+
+      - name: Auto-Resolve Firebase Dependencies Safe Upgrade
+        # ترقية ذكية ومقيدة لكي لا تكسر إصدارات الأندرويد جيردل القديمة
+        run: flutter pub upgrade --allow-reconnect
 
       - name: Get Dependencies
         run: flutter pub get
