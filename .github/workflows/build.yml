@@ -1,64 +1,48 @@
-name: Build Shamel APK
+name: Build Flutter APK
+
 on:
-  workflow_dispatch:
+  workflow_dispatch: # يتيح لك تشغيل البناء يدوياً بضغطة زر
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
+      # 1. جلب ملفات المستودع من جيت هاب
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Unzip Project Files
-        run: |
-          unzip -o shamel_final_master_production_review_FIXED.zip
-          if [ -d "shamel_phase12_release" ]; then
-            mv shamel_phase12_release/* .
-          fi
-
-      - name: Clean Firebase Version Constraints
-        run: |
-          if [ -f "pubspec.yaml" ]; then
-            echo "Removing strict version constraints..."
-            sed -i 's/firebase_core:.*/firebase_core: any/g' pubspec.yaml
-            sed -i 's/firebase_performance:.*/firebase_performance: any/g' pubspec.yaml
-            sed -i 's/firebase_crashlytics:.*/firebase_crashlytics: any/g' pubspec.yaml
-            sed -i 's/firebase_messaging:.*/firebase_messaging: any/g' pubspec.yaml
-            sed -i 's/firebase_auth:.*/firebase_auth: any/g' pubspec.yaml
-            sed -i 's/firebase_analytics:.*/firebase_analytics: any/g' pubspec.yaml
-            sed -i 's/cloud_firestore:.*/cloud_firestore: any/g' pubspec.yaml
-          fi
-
-      - name: Force Compatible Android Dependencies
-        run: |
-          if [ -f "android/app/build.gradle" ]; then
-            echo "Enforcing stable Android dependencies to bypass Gradle 8.9.1 requirement..."
-            # إجبار الأندرويد على استخدام إصدارات مستقرة ومتوافقة مع السيرفر بدلاً من سحب نسخ حديثة متعارضة
-            sed -i '/dependencies {/a \    implementation(platform("androidx.compose:compose-bom:2024.04.01"))\n    implementation("androidx.core:core-ktx:1.13.1")\n    implementation("androidx.activity:activity:1.9.0")\n    implementation("androidx.fragment:fragment:1.7.0")' android/app/build.gradle
-            
-            # إيقاف فحص الـ AAR Metadata تماماً بطريقة برمجية داخل ملف التطبيق
-            echo "android { configurations.all { resolutionStrategy { force 'androidx.core:core-ktx:1.13.1'; force 'androidx.activity:activity:1.9.0' } } }" >> android/app/build.gradle
-          fi
-
-      - name: Setup Java
+      # 2. تثبيت بيئة جافا (مهمة جداً للـ Gradle والأندرويد)
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Setup Flutter
+      # 3. تثبيت بيئة فلاتر
+      - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
 
-      - name: Get Dependencies
-        run: flutter pub get
+      # 4. فك ضغط ملف المشروع الجديد الذي أصلحه كلوود
+      - name: Unzip Project Files
+        run: |
+          unzip -o shamel_phase12_release_FIXED.zip
 
+      # 5. تحميل حزم ومكتبات فلاتر (pub get)
+      - name: Install Dependencies
+        run: |
+          flutter pub get
+
+      # 6. بناء التطبيق واستخراج ملف الـ APK النظيف
       - name: Build APK
-        run: flutter build apk --release
+        run: |
+          flutter build apk --release
 
-      - name: Upload APK
+      # 7. رفع ملف الـ APK النهائي لتتمكن من تحميله على جوالك مباشرة
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: shamel-release-apk
-          path: build/app/outputs/flutter-apk/app-release-apk
+          name: release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
