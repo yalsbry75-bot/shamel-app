@@ -12,7 +12,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 2. تثبيت بيئة جافا (مهمة جداً للـ Gradle والأندرويد)
+      # 2. تثبيت بيئة جافا
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
@@ -25,24 +25,26 @@ jobs:
         with:
           channel: 'stable'
 
-      # 4. فك ضغط ملف المشروع الجديد الذي أصلحه كلوود
+      # 4. فك ضغط ملف المشروع الجديد
       - name: Unzip Project Files
         run: |
           unzip -o shamel_phase12_release_FIXED.zip
 
-      # 5. تحميل حزم ومكتبات فلاتر (pub get)
+      # 5. تحميل حزم ومكتبات فلاتر من داخل المجلد المستخرج
       - name: Install Dependencies
+        working-directory: shamel_phase12_release
         run: |
           flutter pub get
 
-      # 6. بناء التطبيق واستخراج ملف الـ APK النظيف
+      # 6. بناء التطبيق من داخل المجلد المستخرج
       - name: Build APK
+        working-directory: shamel_phase12_release
         run: |
           flutter build apk --release
 
-      # 7. رفع ملف الـ APK النهائي لتتمكن من تحميله على جوالك مباشرة
+      # 7. رفع ملف الـ APK النهائي لتتمكن من تحميله
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: shamel_phase12_release/build/app/outputs/flutter-apk/app-release.apk
