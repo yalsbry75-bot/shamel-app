@@ -31,9 +31,11 @@ jobs:
         run: |
           if [ -f "pubspec.yaml" ]; then
             echo "Modifying pubspec.yaml to resolve Firebase conflicts..."
-            # استبدال أي إصدار محدد لـ firebase_core و firebase_performance لجعلهما يقبلان أي إصدار متوافق تلقائياً
-            sed -i 's/firebase_core:.*/firebase_core: any/g' pubspec.yaml
+            # تنظيف وإصلاح شامل لكل مكتبات الفايربيز المتعارضة وإجبارها على إصدارات متوافقة
+            sed -i 's/firebase_core:.*/firebase_core: 3.15.0/g' pubspec.yaml
             sed -i 's/firebase_performance:.*/firebase_performance: any/g' pubspec.yaml
+            sed -i 's/firebase_crashlytics:.*/firebase_crashlytics: 4.3.10/g' pubspec.yaml
+            sed -i 's/firebase_messaging:.*/firebase_messaging: 15.2.8/g' pubspec.yaml
           fi
 
       - name: Setup Java
