@@ -18,13 +18,13 @@ jobs:
 
       - name: Auto-Fix AccountType Errors (All Files)
         run: |
-          echo "Applying auto-fix for AccountType value/name error in all files..."
+          echo "Applying auto-fix for AccountType value/name error..."
           find . -name "*.dart" -exec sed -i "s/user\.userType?\.value/user\.userType?\.name/g" {} +
 
-      - name: Ultimate Smart Fix For All Firebase Conflicts
+      - name: Clean Firebase Version Constraints
         run: |
           if [ -f "pubspec.yaml" ]; then
-            echo "Executing full automatic resolution for all package conflicts..."
+            echo "Removing strict version constraints..."
             sed -i 's/firebase_core:.*/firebase_core: any/g' pubspec.yaml
             sed -i 's/firebase_performance:.*/firebase_performance: any/g' pubspec.yaml
             sed -i 's/firebase_crashlytics:.*/firebase_crashlytics: any/g' pubspec.yaml
@@ -44,10 +44,6 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-
-      - name: Auto-Resolve Firebase Dependencies Safe Upgrade
-        # تعديل الأمر وحذف الخيار غير المدعوم ليعمل بسلام
-        run: flutter pub upgrade
 
       - name: Get Dependencies
         run: flutter pub get
