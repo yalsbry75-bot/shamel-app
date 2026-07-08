@@ -11,7 +11,7 @@ jobs:
 
       - name: Unzip Project Files
         run: |
-          unzip -o shamel_final_master_production_review.zip
+          unzip -o shamel_final_master_production_review_FIXED.zip
           if [ -d "shamel_phase12_release" ]; then
             mv shamel_phase12_release/* .
           fi
@@ -29,8 +29,8 @@ jobs:
             sed -i 's/firebase_performance:.*/firebase_performance: any/g' pubspec.yaml
             sed -i 's/firebase_crashlytics:.*/firebase_crashlytics: any/g' pubspec.yaml
             sed -i 's/firebase_messaging:.*/firebase_messaging: any/g' pubspec.yaml
-            sed -i 's/firebase_analytics:.*/firebase_analytics: any/g' pubspec.yaml
             sed -i 's/firebase_auth:.*/firebase_auth: any/g' pubspec.yaml
+            sed -i 's/firebase_analytics:.*/firebase_analytics: any/g' pubspec.yaml
             sed -i 's/cloud_firestore:.*/cloud_firestore: any/g' pubspec.yaml
           fi
 
@@ -55,4 +55,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: shamel-release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: build/app/outputs/flutter-apk/app-release-apk
