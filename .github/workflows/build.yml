@@ -16,11 +16,6 @@ jobs:
             mv shamel_phase12_release/* .
           fi
 
-      - name: Auto-Fix AccountType Errors (All Files)
-        run: |
-          echo "Applying auto-fix for AccountType value/name error..."
-          find . -name "*.dart" -exec sed -i "s/user\.userType?\.value/user\.userType?\.name/g" {} +
-
       - name: Clean Firebase Version Constraints
         run: |
           if [ -f "pubspec.yaml" ]; then
@@ -47,6 +42,9 @@ jobs:
 
       - name: Get Dependencies
         run: flutter pub get
+
+      - name: Analyze Project Code (Show Detailed Errors)
+        run: flutter analyze || true
 
       - name: Build APK
         run: flutter build apk --release
