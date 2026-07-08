@@ -30,13 +30,14 @@ jobs:
         run: |
           unzip -o shamel_phase12_release_FIXED.zip
 
-      # 5. تحميل حزم ومكتبات فلاتر من داخل المجلد المستخرج
+      # 5. حل تعارض إصدارات الفايربيز وتحميل الحزم تلقائياً
       - name: Install Dependencies
         working-directory: shamel_phase12_release
         run: |
+          flutter pub upgrade --major-versions
           flutter pub get
 
-      # 6. بناء التطبيق من داخل المجلد المستخرج
+      # 6. بناء التطبيق واستخراج ملف الـ APK النظيف
       - name: Build APK
         working-directory: shamel_phase12_release
         run: |
