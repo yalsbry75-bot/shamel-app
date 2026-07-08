@@ -27,6 +27,15 @@ jobs:
             find . -name "secure_session_storage.dart" -exec sed -i "s/user\.userType?\.value/user\.userType?\.name/g" {} +
           fi
 
+      - name: Force Fix Firebase Conflict
+        run: |
+          if [ -f "pubspec.yaml" ]; then
+            echo "Modifying pubspec.yaml to resolve Firebase conflicts..."
+            # استبدال أي إصدار محدد لـ firebase_core و firebase_performance لجعلهما يقبلان أي إصدار متوافق تلقائياً
+            sed -i 's/firebase_core:.*/firebase_core: any/g' pubspec.yaml
+            sed -i 's/firebase_performance:.*/firebase_performance: any/g' pubspec.yaml
+          fi
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -37,9 +46,6 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-
-      - name: Resolve Firebase Dependencies
-        run: flutter pub upgrade firebase_core firebase_performance
 
       - name: Get Dependencies
         run: flutter pub get
